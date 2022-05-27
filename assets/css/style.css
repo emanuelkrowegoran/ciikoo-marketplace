@@ -3602,6 +3602,11 @@ ul {
     display: none !important;
 }
 
+.banner-slider-wrap {
+    width: 100%;
+    margin-right: 15px;
+}
+
 .home-category-slider {
     margin-top: 30px;
 }
