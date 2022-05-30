@@ -117,7 +117,7 @@
             nav: false,
             dots: false,
             margin: 10,
-            items: 4,
+            items: 5,
             smartSpeed: 1500,
         })
 
