@@ -1,229 +1,498 @@
-(function($) {
+(function() {
     "use strict";
 
-    $(document).ready(function() {
-
-        /**-------------------------------------------
-         *  Navbar fix
-         * -----------------------------------------*/
-        $(document).on('click', '.navbar-area .navbar-nav li.menu-item-has-children>a', function(e) {
-            e.preventDefault();
-        })
-
-        /*--------------------------------------------------
-            select onput
-        ---------------------------------------------------*/
-        if ($('.single-select').length) {
-            $('.single-select').niceSelect();
-        }
-
-        /*---------------------------------------
-            Quantity
-        ---------------------------------------*/
-        function wcqib_refresh_quantity_increments() {
-            jQuery("div.quantity:not(.buttons_added), td.quantity:not(.buttons_added)").each(function(a, b) {
-                var c = jQuery(b);
-                c.addClass("buttons_added"), c.children().first().before('<input type="button" value="-" class="minus" />'), c.children().last().after('<input type="button" value="+" class="plus" />')
-            })
-        }
-        String.prototype.getDecimals || (String.prototype.getDecimals = function() {
-            var a = this,
-                b = ("" + a).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
-            return b ? Math.max(0, (b[1] ? b[1].length : 0) - (b[2] ? +b[2] : 0)) : 0
-        }), jQuery(document).ready(function() {
-            wcqib_refresh_quantity_increments()
-        }), jQuery(document).on("updated_wc_div", function() {
-            wcqib_refresh_quantity_increments()
-        }), jQuery(document).on("click", ".plus, .minus", function() {
-            var a = jQuery(this).closest(".quantity").find(".qty"),
-                b = parseFloat(a.val()),
-                c = parseFloat(a.attr("max")),
-                d = parseFloat(a.attr("min")),
-                e = a.attr("step");
-            b && "" !== b && "NaN" !== b || (b = 0), "" !== c && "NaN" !== c || (c = ""), "" !== d && "NaN" !== d || (d = 0), "any" !== e && "" !== e && void 0 !== e && "NaN" !== parseFloat(e) || (e = 1), jQuery(this).is(".plus") ? c && b >= c ? a.val(c) : a.val((b + parseFloat(e)).toFixed(e.getDecimals())) : d && b <= d ? a.val(d) : b > 0 && a.val((b - parseFloat(e)).toFixed(e.getDecimals())), a.trigger("change")
-        });
-
-        /*---------------------------------------
-            Range slider
-        ---------------------------------------*/
-        $("#slider-range").slider({
-            range: true,
-            min: 0.00,
-            max: 40.00,
-            values: [5.00, 1999.00],
-            slide: function(event, ui) {
-                $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
-            }
-        });
-        $("#amount").val("$" + $("#slider-range").slider("values", 0) +
-            " - $" + $("#slider-range").slider("values", 1));
 
 
-        /* -----------------------------------------------------
-            Variables
-        ----------------------------------------------------- */
-        var leftArrow = '<i class="ri-arrow-left-line"></i>';
-        var leftAngle = '<i class="ri-arrow-left-s-line"></i>';
-        var rightArrow = '<i class="ri-arrow-right-line"></i>';
-        var rightAngle = '<i class="ri-arrow-right-s-line"></i>';
-        var backButton = '<button class="slide-arrow prev-arrow"><i class="fa fa-angle-left"></i></button>';
-        var nextButton = '<button class="slide-arrow next-arrow"><i class="fa fa-angle-right"></i></button>';
-
-        /**onboard-slider**/
-        $('.onboard-slider').owlCarousel({
-            loop: true,
-            nav: true,
-            dots: true,
-            margin: 10,
-            items: 1,
-            autoplay: true,
-            autoplayTimeout: 3000,
-            smartSpeed: 2000,
-            navText: [leftArrow, rightArrow],
-        })
-
-        /**banner-slider**/
-        $('.banner-slider').owlCarousel({
-            loop: false,
-            nav: false,
-            dots: false,
-            margin: 15,
-            items: 1.5,
-            smartSpeed: 1500,
-        })
-
-        /**category-slider**/
-        $('.home-category-slider').owlCarousel({
-                loop: false,
-                nav: false,
-                dots: false,
-                margin: 0,
-                items: 3,
-                smartSpeed: 1500,
-                autoWidth: true,
-            })
-            /**product-slider**/
-        $('.home-product-slider').owlCarousel({
-                loop: false,
-                nav: false,
-                dots: false,
-                margin: 10,
-                items: 1,
-                smartSpeed: 1500,
-            })
-            /**restaurent-slider**/
-        $('.restaurent-client-slider').owlCarousel({
-            loop: false,
-            nav: false,
-            dots: false,
-            margin: 10,
-            items: 5,
-            smartSpeed: 1500,
-        })
-
-        $(document).on('mouseover', '.onboard-btn', function() {
-            $(this).addClass('onboard-btn-active');
-            $('.onboard-btn').removeClass('onboard-btn-active');
-            $(this).addClass('onboard-btn-active');
-        });
-
-        /*------------------------------------------------
-            Magnific JS
-        ------------------------------------------------*/
-        $('.play-btn').magnificPopup({
-            type: 'iframe',
-            removalDelay: 260,
-            mainClass: 'mfp-zoom-in',
-        });
-        $.extend(true, $.magnificPopup.defaults, {
-            iframe: {
-                patterns: {
-                    youtube: {
-                        index: 'youtube.com/',
-                        id: 'v=',
-                        src: 'https://www.youtube.com/embed/Wimkqo8gDZ0'
-                    }
-                }
-            }
-        });
-
-        /*--------------------------------------------
-            Search Popup
-        ---------------------------------------------*/
-        var bodyOvrelay = $('#body-overlay');
-        var searchPopup = $('#td-search-popup');
-
-        $(document).on('click', '#body-overlay', function(e) {
-            e.preventDefault();
-            bodyOvrelay.removeClass('active');
-            searchPopup.removeClass('active');
-        });
-        $(document).on('click', '.search', function(e) {
-            e.preventDefault();
-            searchPopup.addClass('active');
-            bodyOvrelay.addClass('active');
-        });
-
-        /**featured-accordion**/
-        $('.accordion-item').on('click', function(e) {
-            $('.accordion-item').removeClass('active');
-            $(this).toggleClass('active');
-        });
-
-        /*------------------
-           back to top
-        ------------------*/
-        $(document).on('click', '.back-to-top', function() {
-            $("html,body").animate({
-                scrollTop: 0
-            }, 200);
-        });
-
-    });
-
-    $(window).on("scroll", function() {
-        /*---------------------------------------
-        sticky menu activation && Sticky Icon Bar
-        -----------------------------------------*/
-
-        var mainMenuTop = $(".navbar-area");
-        if ($(window).scrollTop() >= 1) {
-            mainMenuTop.addClass('navbar-area-fixed');
+    /**
+     * Easy selector helper function
+     */
+    const select = (el, all = false) => {
+        el = el.trim()
+        if (all) {
+            return [...document.querySelectorAll(el)]
         } else {
-            mainMenuTop.removeClass('navbar-area-fixed');
+            return document.querySelector(el)
         }
+    }
 
-        var ScrollTop = $('.back-to-top');
-        if ($(window).scrollTop() > 1000) {
-            ScrollTop.fadeIn(1000);
+    /**
+     * Easy event listener function
+     */
+    const on = (type, el, listener, all = false) => {
+        if (all) {
+            select(el, all).forEach(e => e.addEventListener(type, listener))
         } else {
-            ScrollTop.fadeOut(1000);
+            select(el, all).addEventListener(type, listener)
+        }
+    }
+
+
+    /**
+     * Easy on scroll event listener 
+     */
+    const onscroll = (el, listener) => {
+        el.addEventListener('scroll', listener)
+    }
+
+    /**
+     * Navbar links active state on scroll
+     */
+    let navbarlinks = select('#navbar .scrollto', true)
+    const navbarlinksActive = () => {
+        let position = window.scrollY + 200
+        navbarlinks.forEach(navbarlink => {
+            if (!navbarlink.hash) return
+            let section = select(navbarlink.hash)
+            if (!section) return
+            if (position >= section.offsetTop && position <= (section.offsetTop + section.offsetHeight)) {
+                navbarlink.classList.add('active')
+            } else {
+                navbarlink.classList.remove('active')
+            }
+        })
+    }
+    window.addEventListener('load', navbarlinksActive)
+    onscroll(document, navbarlinksActive)
+
+    /**
+     * Scrolls to an element with header offset
+     */
+    const scrollto = (el) => {
+        let header = select('#header')
+        let offset = header.offsetHeight
+
+        if (!header.classList.contains('header-scrolled')) {
+            offset -= 10
+        }
+
+        let elementPos = select(el).offsetTop
+        window.scrollTo({
+            top: elementPos - offset,
+            behavior: 'smooth'
+        })
+    }
+
+    /**
+     * Clients Slider
+     */
+    new Swiper('.clients-slider', {
+        speed: 400,
+        loop: true,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false
+        },
+        slidesPerView: 'auto',
+        pagination: {
+            el: '.swiper-pagination',
+            type: 'bullets',
+            clickable: true
+        },
+        breakpoints: {
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 40
+            },
+            480: {
+                slidesPerView: 3,
+                spaceBetween: 60
+            },
+            640: {
+                slidesPerView: 4,
+                spaceBetween: 80
+            },
+            992: {
+                slidesPerView: 4,
+                spaceBetween: 80
+            }
         }
     });
 
-    $(window).on('load', function() {
 
-        /*-----------------
-            preloader
-        ------------------*/
-        var preLoder = $("#preloader");
-        preLoder.fadeOut(0);
 
-        /*-----------------
-            back to top
-        ------------------*/
-        var backtoTop = $('.back-to-top')
-        backtoTop.fadeOut();
-
-        /*---------------------
-            Cancel Preloader
-        ----------------------*/
-        $(document).on('click', '.cancel-preloader a', function(e) {
-            e.preventDefault();
-            $("#preloader").fadeOut(500);
-        });
-
+    /**
+     * Pulau Slider
+     */
+    new Swiper('.pulau-slider', {
+        speed: 400,
+        loop: true,
+        autoplay: {
+            delay: 4000,
+            disableOnInteraction: false
+        },
+        slidesPerView: 'auto',
+        pagination: {
+            el: '.swiper-pagination',
+            type: 'bullets',
+            clickable: true
+        },
+        breakpoints: {
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 40
+            },
+            480: {
+                slidesPerView: 2,
+                spaceBetween: 60
+            },
+            640: {
+                slidesPerView: 3,
+                spaceBetween: 80
+            },
+            992: {
+                slidesPerView: 5,
+                spaceBetween: 40
+            }
+        }
     });
 
 
-})(jQuery);
+    /**
+     * Blog Slider
+     */
+    new Swiper('.blog-slider', {
+        speed: 400,
+        loop: true,
+        autoplay: {
+            delay: 4000,
+            disableOnInteraction: false
+        },
+        slidesPerView: 'auto',
+        pagination: {
+            el: '.swiper-pagination',
+            type: 'bullets',
+            clickable: true
+        },
+        breakpoints: {
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 40
+            },
+            480: {
+                slidesPerView: 2,
+                spaceBetween: 60
+            },
+            640: {
+                slidesPerView: 3,
+                spaceBetween: 80
+            },
+            992: {
+                slidesPerView: 4,
+                spaceBetween: 50
+            }
+        }
+    });
+
+
+    /**
+     * Banner Slider
+     */
+    new Swiper('.banner-slider', {
+        speed: 400,
+        loop: true,
+        autoplay: {
+            delay: 4000,
+            disableOnInteraction: false
+        },
+        slidesPerView: 'auto',
+        pagination: {
+            el: '.swiper-pagination',
+            type: 'bullets',
+            clickable: true
+        },
+        breakpoints: {
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 40
+            },
+            480: {
+                slidesPerView: 2,
+                spaceBetween: 60
+            },
+            640: {
+                slidesPerView: 3,
+                spaceBetween: 80
+            },
+            992: {
+                slidesPerView: 1,
+                spaceBetween: 50
+            }
+        }
+    });
+
+
+    /**
+     * Lowongan Lainnya Slider
+     */
+    new Swiper('.lowonganlainnya-slider', {
+        speed: 400,
+        loop: true,
+        autoplay: {
+            delay: 4000,
+            disableOnInteraction: false
+        },
+        slidesPerView: 'auto',
+        pagination: {
+            el: '.swiper-pagination',
+            type: 'bullets',
+            clickable: true
+        },
+        breakpoints: {
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 40
+            },
+            480: {
+                slidesPerView: 2,
+                spaceBetween: 60
+            },
+            640: {
+                slidesPerView: 3,
+                spaceBetween: 80
+            },
+            992: {
+                slidesPerView: 4,
+                spaceBetween: 50
+            }
+        }
+    });
+
+    /**
+     * Porfolio isotope and filter
+     */
+    window.addEventListener('load', () => {
+        let portfolioContainer = select('.portfolio-container');
+        if (portfolioContainer) {
+            let portfolioIsotope = new Isotope(portfolioContainer, {
+                itemSelector: '.portfolio-item',
+                layoutMode: 'fitRows'
+            });
+
+            let portfolioFilters = select('#portfolio-flters li', true);
+
+            on('click', '#portfolio-flters li', function(e) {
+                e.preventDefault();
+                portfolioFilters.forEach(function(el) {
+                    el.classList.remove('filter-active');
+                });
+                this.classList.add('filter-active');
+
+                portfolioIsotope.arrange({
+                    filter: this.getAttribute('data-filter')
+                });
+                aos_init();
+            }, true);
+        }
+
+    });
+
+    /**
+     * Initiate portfolio lightbox 
+     */
+    const portfolioLightbox = GLightbox({
+        selector: '.portfokio-lightbox'
+    });
+
+    /**
+     * Portfolio details slider
+     */
+    new Swiper('.portfolio-details-slider', {
+        speed: 400,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            type: 'bullets',
+            clickable: true
+        }
+    });
+
+
+    /**
+     * Banner Promo slider
+     */
+    new Swiper('.bannerpromo-slider', {
+        speed: 600,
+        loop: true,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false
+        },
+        slidesPerView: 'auto',
+        pagination: {
+            el: '.swiper-pagination',
+            type: 'bullets',
+            clickable: true
+        },
+        breakpoints: {
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 40
+            },
+
+            1200: {
+                slidesPerView: 3,
+            }
+        }
+    });
+
+    /**
+     * Banner Promo slider
+     */
+
+    new Swiper('.banneriklan-slider', {
+        speed: 400,
+        loop: true,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false
+        },
+        slidesPerView: 'auto',
+        pagination: {
+            el: '.swiper-pagination',
+            type: 'bullets',
+            clickable: true
+        },
+        breakpoints: {
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 40
+            },
+            480: {
+                slidesPerView: 1,
+                spaceBetween: 60
+            },
+            640: {
+                slidesPerView: 1,
+                spaceBetween: 80
+            },
+            992: {
+                slidesPerView: 1,
+                spaceBetween: 80
+            }
+        }
+    });
+
+    /**
+     * Banner Promo 02 slider
+     */
+    new Swiper('.bannerpromo2-slider', {
+        speed: 600,
+        loop: true,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false
+        },
+        slidesPerView: 'auto',
+        pagination: {
+            el: '.swiper-pagination',
+            type: 'bullets',
+            clickable: true
+        },
+        breakpoints: {
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 40
+            },
+
+            1200: {
+                slidesPerView: 1,
+            }
+        }
+    });
+
+    /**
+     * Lowongan slider
+     */
+
+    /**
+     * Section Lowongan Halaman Depan slider
+     */
+    new Swiper('.sectionlowongan-slider', {
+        speed: 400,
+        loop: true,
+        autoplay: {
+            delay: 4000,
+            disableOnInteraction: false
+        },
+        slidesPerView: 'auto',
+        pagination: {
+            el: '.swiper-pagination',
+            type: 'bullets',
+            clickable: true
+        },
+        breakpoints: {
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 40
+            },
+            480: {
+                slidesPerView: 2,
+                spaceBetween: 60
+            },
+            640: {
+                slidesPerView: 3,
+                spaceBetween: 80
+            },
+            992: {
+                slidesPerView: 4,
+                spaceBetween: 50
+            }
+        }
+    });
+
+
+
+
+    /**
+     * Testimonials slider
+     */
+    new Swiper('.testimonials-slider', {
+        speed: 600,
+        loop: true,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false
+        },
+        slidesPerView: 'auto',
+        pagination: {
+            el: '.swiper-pagination',
+            type: 'bullets',
+            clickable: true
+        },
+        breakpoints: {
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 40
+            },
+
+            1200: {
+                slidesPerView: 3,
+            }
+        }
+    });
+
+    /**
+     * Animation on scroll
+     */
+    function aos_init() {
+        AOS.init({
+            duration: 1000,
+            easing: "ease-in-out",
+            once: true,
+            mirror: false
+        });
+    }
+    window.addEventListener('load', () => {
+        aos_init();
+    });
+
+
+
+
+
+
+
+})();
